@@ -3,4 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Main</title>
+    <link rel="stylesheet" type="text/css" href="../resources/subjects.css">
 </head>
+<body onload = "loadSubjects()" >
+    <div id="leftSidebar">
+        <h2>Subjects:</h2>
+        <!-- dynamically add subjects based on subjects.css list-->
+        </div>
+    </div>
+</body>
+
+<script>
+function loadSubjects() {
+    // Make subjects pull from list later
+    var subjects = 'Sub1, Sub2, Sub3, Sub4, Sub5, Sub6, Create New'.split(',');
+    for (var c in subjects) {
+        var newElement = document.createElement('div');
+        newElement.id = subjects[c]; newElement.className = "subject";
+        newElement.innerHTML = subjects[c];
+        document.body.appendChild(newElement);
+} 
+}
+</script>
