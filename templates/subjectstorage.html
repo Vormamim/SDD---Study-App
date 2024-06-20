@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <title>SubjectStorage</title>
     <link rel="stylesheet" type="text/css" href="../resources/subjects.css">
+    <script src="../javascript/main.js"></script> 
 </head>
-<body onload = "loadSubjects()" >
+<body onload="loadSubjects()">
     <div class="topnav">
         <a href="../templates/home.html">Home</a>
         <a class="active" href="../templates/subjectstorage.html">Subjects</a>
@@ -13,5 +14,50 @@
         <a href="../templates/SchedulePlanner.html">Schedule Planner</a>
         <a href="../templates/GradeCalculator.html">Grade Calculator</a>
       </div> 
-    </div>
+      <h1 class="title">Subjects</h1>
+      <label for="TasksInput" class="btn loadbtn" style="margin-left:39%"">Load subjects from Subjectgrades file</label>
+      <input id="TasksInput" style="visibility:hidden;" type="file" onchange='openTasksFile(event)'> 
+      <div id="subjectcontainer" class="subjectwrapper">
+      </div>
 </body>
+
+<script>
+    const openTasksFile = (e) => { // function to open the tasks file
+        e.target.files[0].text().then((t) => {
+            const outcome = t.split(/\r?\n/);
+            console.log("File content:", outcome);
+            const dataLines = outcome.slice(1);
+            [group1, group2, group3] = splitAndGroupArrays(dataLines);
+            console.log("Subjects Found:", group1);
+            group1 = uniq(group1);
+            console.log("Unique Subjects Found:", group1);
+            group1.push("Create New");
+            group1.forEach(subject => {
+                var div = document.getElementById('subjectcontainer')
+                var newElement = document.createElement('div');
+                newElement.id = subject; newElement.className = "subjectstored";
+                newElement.addEventListener("click", subjectClick, false);
+                newElement.innerHTML = subject;
+                div.appendChild(newElement);
+            });
+
+        });
+    };
+    function splitAndGroupArrays(arrays) { // function to split the arrays into groups
+        let group1 = [];
+        let group2 = [];
+        let group3 = [];
+
+        arrays.forEach(array => {
+            let sections = array.split(',');
+            if (sections.length === 3) {
+                group1.push(sections[0].trim());
+                group2.push(sections[1].trim());
+                group3.push(sections[2].trim());
+            } else {
+                console.warn("Error", array);
+            }
+        });
+        return [group1, group2, group3];
+    }
+</script>

@@ -5,13 +5,104 @@
     <title>MemorisationSystem</title>
     <link rel="stylesheet" type="text/css" href="../resources/subjects.css">
 </head>
-<body onload = "loadSubjects()" >
+<body onload="">
     <div class="topnav">
-        <a href="../templates/MemorisationSystem.html">Home</a>
+        <a href="../templates/home.html">Home</a>
         <a href="../templates/subjectstorage.html">Subjects</a>
         <a class="active" href="../templates/MemorisationSystem.html">Memorisation System</a>
         <a href="../templates/SchedulePlanner.html">Schedule Planner</a>
         <a href="../templates/GradeCalculator.html">Grade Calculator</a>
-      </div> 
+    </div> 
+    <h1 class="title">Memoriser</h1>
+    <div class="flashcard-container">
+        <h2>Click the "Start" button to select a flashcard file to practice</h2>
+        <div class="flashcard-types">
+            <button id="startButton">Start</button>
+            <input id="questionsFile" type="file" style="visibility:hidden;" onchange='loadQuestions(event)'>
+        </div>
+        <dialog>
+            <div class="flashcard" id="flashcard">
+                <span id="questionText"></span><br>
+                <button id="answer1" onclick="checkAnswer(this)"></button><br>
+                <button id="answer2" onclick="checkAnswer(this)"></button><br>
+                <button id="answer3" onclick="checkAnswer(this)"></button><br>
+                <button id="answer4" onclick="checkAnswer(this)"></button>
+            </div>
+            <div class="action-buttons">
+                <button onclick="nextQuestion()">Next</button>
+                <button onclick="closeDialog()">Close</button>
+            </div>
+            <div id="result"></div>
+        </dialog>
     </div>
 </body>
+<script>
+    let questions = [];
+    let currentQuestionIndex = 0;
+
+    document.getElementById('startButton').addEventListener('click', function () {
+        document.getElementById('questionsFile').click();
+    });
+
+    function loadQuestions(event) { // function to load the questions
+        const file = event.target.files[0];
+        if (file) {
+            file.text().then((text) => {
+                const lines = text.split(/\r?\n/);
+                questions = lines.map(line => line.split(',')).filter(parts => parts.length === 5); // filters the questions based on the length of the parts
+                console.log(questions);
+                if (questions.length > 0) {
+                    currentQuestionIndex = Math.floor(Math.random() * questions.length); // randomises the questions based on the length of the questions array
+                    showQuestion(currentQuestionIndex);
+                    document.querySelector('dialog').showModal();
+                }
+            });
+        }
+    }
+
+    function showQuestion(index) { // function to show the question
+        const [question, a1, a2, a3, a4] = questions[index];
+        document.getElementById('questionText').textContent = question;
+        
+        const answers = [a1, a2, a3, a4];
+        shuffleArray(answers);
+        
+        document.getElementById('answer1').textContent = answers[0];
+        document.getElementById('answer2').textContent = answers[1];
+        document.getElementById('answer3').textContent = answers[2];
+        document.getElementById('answer4').textContent = answers[3];
+        
+        document.getElementById('result').textContent = '';
+    }
+
+    function checkAnswer(button) { // function to check the answer
+        const selectedAnswer = button.textContent.trim();
+        const correctAnswer = questions[currentQuestionIndex][1];
+
+        const resultDiv = document.getElementById('result');
+        if (selectedAnswer === correctAnswer) {
+            resultDiv.textContent = 'correct';
+            resultDiv.style.color = 'green';
+        } else {
+            resultDiv.textContent = 'incorrect';
+            resultDiv.style.color = 'red';
+        }
+    }
+
+    function nextQuestion() { // function to get the next question
+        currentQuestionIndex = Math.floor(Math.random() * questions.length);
+        showQuestion(currentQuestionIndex);
+    }
+
+    function closeDialog() { // function to close the dialog
+        document.querySelector('dialog').close();
+    }
+
+    function shuffleArray(array) { // function to shuffle the array
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+</script>
+</html>

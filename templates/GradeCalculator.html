@@ -4,14 +4,124 @@
     <meta charset="UTF-8">
     <title>Grade Calculator</title>
     <link rel="stylesheet" type="text/css" href="../resources/subjects.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"> </script>
 </head>
-<body onload = "loadSubjects()" >
+<body onload = "init()" >
     <div class="topnav">
         <a href="../templates/home.html">Home</a>
         <a href="../templates/subjectstorage.html">Subjects</a>
         <a href="../templates/MemorisationSystem.html">Memorisation System</a>
         <a href="../templates/SchedulePlanner.html">Schedule Planner</a>
         <a class="active" href="../templates/GradeCalculator.html">Grade Calculator</a>
-      </div> 
+    </div> 
+    <h1 class="title">Grade Calculator</h1>
+    <label for="TasksInput" class="btn">Select Grades File</label>
+    <input id="TasksInput" style="visibility:hidden;" type="file" onchange='openTasksFile(event)'> 
+    <div id="maincontainer" style="display:flex">
+        <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+        <div id="gradesSidebar" class="sidebar right-sidebar">
+            <h2>Overall Grades:</h2>
+        </div>
     </div>
 </body>
+
+<script>
+    var xValues = ["A", "B", "C", "D", "E"];
+    var yValues = [55, 49, 44, 24, 15];
+    var barColors = ["red", "green", "blue", "orange", "brown"];
+    var myChart; 
+
+    function init() { // initialises the chart when the body loads
+        var ctx = document.getElementById('myChart').getContext('2d');
+        myChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{ ticks: { beginAtZero: true } }]
+                },
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: "Grades"
+                }
+            }
+        });
+    }
+
+    const openTasksFile = (e) => { // function to open the tasks file
+        e.target.files[0].text().then((t) => {
+            const outcome = t.split(/\r?\n/);
+            console.log("File content:", outcome);
+            const dataLines = outcome.slice(1);
+            const [group1, group2, group3] = splitAndGroupArrays(dataLines);
+            console.log("Group 1:", group1); //subjects
+            console.log("Group 2:", group2); //tasks   
+            console.log("Group 3:", group3); //grades
+            // group12 is the merged groups 1 and 2 to display both the subject and task on the grade column
+            const group12 = [];
+                for (let i = 0; i < group1.length; i++) {
+                group12.push(`${group1[i]} ${group2[i]}`);
+                }
+            xValues = group12;
+            yValues = group3.map(Number);
+            updateChart();
+            updateGrades(group1, group3);
+        });
+    };
+
+    function updateChart() { // function to update the chart with new data
+        myChart.data.labels = xValues;
+        myChart.data.datasets[0].data = yValues;
+        myChart.update();
+    }
+
+    function splitAndGroupArrays(arrays) { // function to split the arrays into groups
+        let group1 = []; //subjects
+        let group2 = []; //tasks
+        let group3 = []; //grades
+
+        arrays.forEach(array => {
+            let sections = array.split(',');
+            if (sections.length === 3) {
+                group1.push(sections[0].trim());
+                group2.push(sections[1].trim());
+                group3.push(sections[2].trim());
+            } else {
+                console.warn("Error", array);
+            }
+        });
+        return [group1, group2, group3];
+    }
+    
+    function updateGrades(subjects, grades) { // function to update the grades on the sidebar
+    const sidebar = document.getElementById('gradesSidebar');
+    const subjectGradesMap = {};
+
+    for (let i = 0; i < subjects.length; i++) {
+        const subject = subjects[i];
+        const grade = Number(grades[i]);
+        if (!subjectGradesMap[subject]) {
+            subjectGradesMap[subject] = [];
+        }
+        subjectGradesMap[subject].push(grade);
+    }
+    for (const subject in subjectGradesMap) {
+        const subjectGrades = subjectGradesMap[subject];
+        const totalGrades = subjectGrades.reduce((sum, grade) => sum + grade, 0);
+        const averageGrade = totalGrades / subjectGrades.length;
+
+        const div = document.createElement('div');
+        div.textContent = `${subject}: ${averageGrade.toFixed(2)}`;
+        div.classList.add('grade');
+        
+        sidebar.appendChild(div);
+    }
+}
+</script>

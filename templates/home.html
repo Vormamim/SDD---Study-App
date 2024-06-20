@@ -4,31 +4,64 @@
     <meta charset="UTF-8">
     <title>Main</title>
     <link rel="stylesheet" type="text/css" href="../resources/subjects.css">
+    <script src="../javascript/main.js"></script> 
 </head>
-<body onload = "loadSubjects()" >
+<body onload="">
     <div class="topnav">
         <a class="active" href="#home">Home</a>
         <a href="../templates/subjectstorage.html">Subjects</a>
         <a href="../templates/MemorisationSystem.html">Memorisation System</a>
         <a href="../templates/SchedulePlanner.html">Schedule Planner</a>
         <a href="../templates/GradeCalculator.html">Grade Calculator</a>
-      </div> 
+    </div> 
     <div id="leftSidebar">
         <h2>Subjects:</h2>
-        <!-- dynamically add subjects based on subjects.css list-->
-        </div>
+        <label for="TasksInput" class="btn loadbtn">Load subjects from Subjectgrades file</label>
+        <input id="TasksInput" style="visibility:hidden;" type="file" onchange='openTasksFile(event)'> 
+    </div>
+    <div id="centerButtons" style="display: flex; flex-direction: column; align-items: center; margin-top: 50px;">
+        <button onclick="location.href='../templates/GradeCalculator.html'" style="width:30%; height:120px; margin:10px;">Grade Calculator</button>
+        <button onclick="location.href='../templates/SchedulePlanner.html'" style="width:30%; height:120px; margin:10px;">Schedule Planner</button>
+        <button onclick="location.href='../templates/MemorisationSystem.html'" style="width:30%; height:120px; margin:10px;">Memorisation System</button>
     </div>
 </body>
 
 <script>
-function loadSubjects() {
-    // Make subjects pull from list later
-    var subjects = 'Sub1, Sub2, Sub3, Sub4, Sub5, Sub6, Create New'.split(',');
-    for (var c in subjects) {
-        var newElement = document.createElement('div');
-        newElement.id = subjects[c]; newElement.className = "subject";
-        newElement.innerHTML = subjects[c];
-        document.body.appendChild(newElement);
-} 
-}
+    const openTasksFile = (e) => { // function to open the tasks file
+        e.target.files[0].text().then((t) => {
+            const outcome = t.split(/\r?\n/);
+            console.log("File content:", outcome);
+            const dataLines = outcome.slice(1);
+            [group1, group2, group3] = splitAndGroupArrays(dataLines);
+            console.log("Subjects Found:", group1);
+            group1 = uniq(group1);
+            console.log("Unique Subjects Found:", group1);
+            group1.forEach(subject => {
+                var newElement = document.createElement('div');
+                newElement.id = subject; newElement.className = "subject";
+                newElement.innerHTML = subject;
+                newElement.addEventListener("click", subjectClick, false); 
+                document.body.appendChild(newElement);
+            });
+
+        });
+    };
+
+function splitAndGroupArrays(arrays) { // function to split the arrays into groups
+        let group1 = [];
+        let group2 = [];
+        let group3 = [];
+
+        arrays.forEach(array => {
+            let sections = array.split(',');
+            if (sections.length === 3) {
+                group1.push(sections[0].trim());
+                group2.push(sections[1].trim());
+                group3.push(sections[2].trim());
+            } else {
+                console.warn("Error", array);
+            }
+        });
+        return [group1, group2, group3];
+    }
 </script>

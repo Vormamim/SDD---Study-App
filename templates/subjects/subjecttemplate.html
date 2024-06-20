@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en"></html>
+<head>
+    <meta charset="UTF-8">
+    <title>Main</title>
+    <link rel="stylesheet" type="text/css" href="../../resources/subjects.css">
+    <script type="text/javascript" src="../../src/jquery.csv.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script src="../javascript/main.js"></script> 
+</head>
+<body onload="subjectping()">
+    <div class="topnav">
+        <a  href="../../templates/home.html">Home</a>
+        <a class="active" href="../../templates/subjectstorage.html">Subjects</a>
+        <a href="../../templates/MemorisationSystem.html">Memorisation System</a>
+        <a href="../../templates/SchedulePlanner.html">Schedule Planner</a>
+        <a href="../../templates/GradeCalculator.html">Grade Calculator</a>
+    </div>
+        <h1 style="line-height: 175%" class="title"></h1>
+        <div class="titlewrapper">
+            <div id="gradesSidebar" class="sidebar right-sidebar">
+                <h2>Overall Grade:</h2>
+            </div>
+            <div id="tasksSidebar" class="sidebar left-sidebar">
+                <h2>Upcoming Tasks:</h2>
+            </div>
+        </div>
+    <div class="tablewrapper" style="display:flex">
+        <label for="TasksInput" style="margin-left:14%" class="btn">Select Tasks File</label>
+        <input id="TasksInput" style="visibility:hidden; margin-left:14%" type="file" onchange='openTasksFile(event)'> 
+        <label style="margin-left:34%" for="GradesInput" class="btn">Select Grades File</label>
+        <input style="visibility:hidden; margin-left:34%" id="GradesInput" type="file" onchange='openFile(event)'>
+        <table class="taskstable" id="taskTable">
+                <tbody> <!-- tbody stores the tasks table -->
+                </tbody>
+        </table>
+        <table class="gradetable" id="gradestable">
+            <tbody> <!-- tbody stores the grades table -->
+            </tbody>
+        </table>
+    </div>
+</body>
+<script>
+function splitAndGroupArrays(arrays) { // function to split the arrays into groups
+        let group1 = [];
+        let group2 = [];
+        let group3 = [];
+        let group4 = [];
+        let group5 = [];
+
+        arrays.forEach(array => {
+            let sections = array.split(',');
+            if (sections.length === 5) {
+                group1.push(sections[0].trim());
+                group2.push(sections[1].trim());
+                group3.push(sections[2].trim());
+                group4.push(sections[3].trim());
+                group5.push(sections[4].trim());
+            } else {
+                console.warn("Error", array);
+            }
+        });
+        return [group1, group2, group3, group4, group5];
+    }
+function splitAndGroupGradesArrays(arrays) { // function to split the grades arrays into groups
+        let group1 = [];
+        let group2 = [];
+        let group3 = [];
+
+        arrays.forEach(array => {
+            let sections = array.split(',');
+            if (sections.length === 3) {
+                group1.push(sections[0].trim());
+                group2.push(sections[1].trim());
+                group3.push(sections[2].trim());
+            } else {
+                console.warn("Error", array);
+            }
+        });
+        return [group1, group2, group3];
+    }
+    function subjectping(){ // function to get the subject name from the url
+        url = window.location.href
+        var queryString = url ? url.split('?')[1] : window.location.search.slice(1);
+        var queryString = queryString.split('=')[1];
+        document.title = queryString;
+        header = document.getElementsByClassName("title")[0]; // sets the title of the page to the subject name
+        header.innerHTML = queryString;
+    }
+    function User(name, lastname, city, email) {
+    this.name = name;
+    this.lastname = lastname;
+    this.city = city;
+    this.email = email;
+    }
+
+    let myArr = [
+    ]
+
+    document.querySelector("table tbody").innerHTML = myArr.map(user => `<tr><td>${user.name}</td><td>${user.lastname}</td><td>`).join('')
+
+const openFile = (e) => { // function to open the grades file insterted into the page
+    e.target.files[0].text().then((t) => {
+        const outcome = t.split(/\r?\n/);
+        console.log("File content:", outcome);
+        const dataLines = outcome.slice(1);
+        const [group1, group2, group3] = splitAndGroupGradesArrays(dataLines);
+        console.log("Group 1:", group1); //subjects
+        console.log("Group 2:", group2); //tasks   
+        console.log("Group 3:", group3); //grades
+        subjectid = document.title;
+        console.log("Subject ID:", subjectid);
+        updateSubjectGrades(group1, group2, group3, subjectid);
+    });
+};
+    const openTasksFile = (e) => { // function to open the tasks file insterted into the page
+        e.target.files[0].text().then((t) => {
+            const outcome = t.split(/\r?\n/);
+            console.log("File content:", outcome);
+            const dataLines = outcome.slice(1);
+            const [group1, group2, group3, group4, group5] = splitAndGroupArrays(dataLines);
+            console.log("Group 1:", group1); //subjects
+            console.log("Group 2:", group2); //tasks   
+            console.log("Group 3:", group3); //startdates
+            console.log("Group 4:", group4); //duedates
+            console.log("Group 5:", group5); //grades
+            subjectid = document.title;
+            console.log("Subject ID:", subjectid);
+            updateSubjectTasks(group5, group1, group3, subjectid);
+        });
+    };
+function updateSubjectTasks(subjects, tasks, dueDates, targetSubject) { // function to update the tasks list with new tasks
+    const table = document.getElementById('taskTable');
+                while (table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+
+    for (let i = 0; i < subjects.length; i++) {
+      console.log("Subject:", subjects[i]);
+      console.log("targetSubject:", targetSubject);
+        if (subjects[i] === targetSubject) {
+            const row = table.insertRow();
+            const taskCell = row.insertCell(0);
+            const dueDateCell = row.insertCell(1);
+            taskCell.textContent = tasks[i];
+            dueDateCell.textContent = dueDates[i];
+        }
+    }
+}
+function updateSubjectGrades(subjects, tasks, grades, targetSubject) { // function to update the grades list with new grades
+    const table = document.getElementById('gradestable');
+    const overallGradeDiv = document.querySelector('#gradesSidebar h2');
+
+    while (table.rows.length > 1) {
+        table.deleteRow(1);
+    }
+
+    let totalGrades = 0;
+    let gradeCount = 0;
+
+    for (let i = 0; i < subjects.length; i++) {
+        console.log("Subject:", subjects[i]);
+        console.log("targetSubject:", targetSubject);
+        if (subjects[i] === targetSubject) {
+            const row = table.insertRow();
+            const taskCell = row.insertCell(0);
+            const gradesCell = row.insertCell(1);
+            taskCell.textContent = tasks[i];
+            gradesCell.textContent = grades[i];
+
+            totalGrades += Number(grades[i]);
+            gradeCount++;
+        }
+    }
+
+    if (gradeCount > 0) {
+        const averageGrade = (totalGrades / gradeCount).toFixed(2);
+        overallGradeDiv.textContent = `Overall Grade: ${averageGrade}`;
+    } else {
+        overallGradeDiv.textContent = `Overall Grade: N/A`;
+    }
+}
+</script>

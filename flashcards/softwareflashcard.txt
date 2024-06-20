@@ -1,0 +1,5 @@
+Who is known as the father of computers?,Charles Babbage,Alan Turing,Bill Gates,Steve Jobs
+What does HTML stand for?,HyperText Markup Language,Hyperlink and Text Markup Language,Home Tool Markup Language,Hyper Transfer Markup Language
+What is the main function of a compiler?,Translate code to machine language,Execute programs,Debug code,Edit code
+What does CSS stand for?,Cascading Style Sheets,Computer Style Sheets,Creative Style Sheets,Colorful Style Sheets
+What programming language is known for its use in web development?,JavaScript,Python,C,C++

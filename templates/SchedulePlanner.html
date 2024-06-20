@@ -4,14 +4,163 @@
     <meta charset="UTF-8">
     <title>SchedulePlanner</title>
     <link rel="stylesheet" type="text/css" href="../resources/subjects.css">
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js'></script>
+    <script src="../javascript/main.js"></script> 
 </head>
-<body onload = "loadSubjects()" >
+<body>
     <div class="topnav">
         <a href="../templates/home.html">Home</a>
         <a href="../templates/subjectstorage.html">Subjects</a>
         <a href="../templates/MemorisationSystem.html">Memorisation System</a>
         <a class="active" href="../templates/SchedulePlanner.html">Schedule Planner</a>
         <a href="../templates/GradeCalculator.html">Grade Calculator</a>
-      </div> 
-    </div>
+    </div> 
+    <h1 class="title">Schedule Planner</h1>
+    <button id="loadFileBtn" class="btn">Select Schedule File</button>
+    <button id="createTaskBtn" class="btn">Create New Task</button>
+    <div id='calendar'></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            calendarEl = document.getElementById('calendar');
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                events: [],
+                initialView: 'dayGridMonth',
+                selectable: true,
+                height: "auto",
+                eventMouseEnter: function(info) {
+            showTaskDetails(info.event);
+        },
+        eventMouseLeave: function() {
+            hideTaskDetails();
+        }
+            });
+            calendar.render();
+
+            document.getElementById('loadFileBtn').addEventListener('click', loadSubjects);
+            document.getElementById('createTaskBtn').addEventListener('click', createTask);
+        });
+
+        function showTaskDetails(event) {
+    const detailsDiv = document.createElement('div');
+    detailsDiv.id = 'taskDetailsHover';
+    detailsDiv.style.position = 'absolute';
+    detailsDiv.style.backgroundColor = 'white';
+    detailsDiv.style.border = '1px solid black';
+    detailsDiv.style.padding = '10px';
+    detailsDiv.style.zIndex = '1000';
+    detailsDiv.innerHTML = `
+        <strong>${event.title}</strong><br>
+        Start: ${event.start.toLocaleString()}<br>
+        End: ${event.end ? event.end.toLocaleString() : 'N/A'}<br>
+        Details: ${event.extendedProps.details || 'No details provided'}
+    `;
+    document.body.appendChild(detailsDiv);
+    document.addEventListener('mousemove', function moveListener(e) {
+        detailsDiv.style.left = e.pageX + 10 + 'px';
+        detailsDiv.style.top = e.pageY + 10 + 'px';
+    }, { once: true });
+}
+
+function hideTaskDetails() { // function to hide the task details
+    const detailsDiv = document.getElementById('taskDetailsHover');
+    if (detailsDiv) {
+        detailsDiv.remove();
+    }
+}
+
+        function loadSubjects() { // function to load the subjects
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.onchange = openSubjectsFile;
+            input.click();
+        }
+
+        const openSubjectsFile = (e) => {
+    e.target.files[0].text().then((t) => {
+        const outcome = t.split(/\r?\n/);
+        console.log("File content:", outcome);
+        const dataLines = outcome.slice(1);
+        const [titles, starts, ends, details, subjects] = splitAndGroupArrays(dataLines);
+        console.log("Titles:", titles);
+        console.log("Starts:", starts);
+        console.log("Ends:", ends);
+        console.log("Details:", details);
+        console.log("Subjects:", subjects);
+
+        // Create events array
+        const events = titles.map((title, index) => ({
+            title: title,
+            start: starts[index],
+            end: ends[index],
+            extendedProps: { details: details[index] }
+        }));
+
+        localStorage.setItem('scheduleEvents', JSON.stringify(events));
+        updateCalendar();
+    });
+};
+
+function splitAndGroupArrays(arrays) { // function to split the arrays into groups
+    let group1 = [];
+    let group2 = [];
+    let group3 = [];
+    let group4 = [];
+    let group5 = [];
+
+    arrays.forEach(array => {
+        let sections = array.split(',');
+
+        if (sections.length === 5) {
+            group1.push(sections[0].trim());
+            group2.push(sections[1].trim());
+            group3.push(sections[2].trim());
+            group4.push(sections[3].trim());
+            group5.push(sections[4].trim());
+        } else {
+            console.warn("Error", array);
+        }
+    });
+
+    return [group1, group2, group3, group4, group5];
+}
+
+function createTask() { // function to create a new task
+    var newTask = prompt("Enter the name of the task:");
+    var startDate = prompt("Enter start date of the task (Format - YYYY:MM:DD):");
+    var endDate = prompt("Enter end date of the task (Format - YYYY:MM:DD):");
+    var details = prompt("Task Details:");
+    if (newTask != null) {
+        newTask = {
+            title: newTask,
+            start: startDate,
+            end: endDate,
+            extendedProps: { details: details }
+        };
+        const existingEvents = JSON.parse(localStorage.getItem('scheduleEvents')) || [];
+        existingEvents.push(newTask);
+        localStorage.setItem('scheduleEvents', JSON.stringify(existingEvents));
+        updateCalendar();
+    }
+}
+
+
+function updateCalendar() { // function to update the calendar with new data
+    const events = JSON.parse(localStorage.getItem('scheduleEvents')) || [];
+    calendar.removeAllEvents();
+    events.forEach(event => {
+        calendar.addEvent({
+            title: event.title,
+            start: event.start,
+            end: event.end,
+            extendedProps: { details: event.extendedProps ? event.extendedProps.details : '' } // Ensure extendedProps
+        });
+    });
+    calendar.render();
+}
+
+        // Load existing events from local storage on page load
+        document.addEventListener('DOMContentLoaded', updateCalendar);
+    </script>
 </body>
+</html>

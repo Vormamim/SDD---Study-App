@@ -1,0 +1,20 @@
+- make it so only respective tasks are in subjects menu - DONE
+- calculate overall grade - DONE
+- get grades and tasks on same row with display:flex - DONE
+- create new subject button - DONE
+- finish grades menu - DONE
+- un-ai schedule Planner
+- change schedule planner menu to popout window - DONE
+- make subject selectors on menu work - DONE
+- enable details view in scheduler
+- un-ai memoriser
+- fill in memoriser with actual content - DONE
+- change all buttons to new format
+- move as much javascript to main.js as possible
+- remove all redundant css
+- change default flashcard text - DONE
+- store data in local storage to make opening a file each time unnecessary
+- UN-AI the update grades function
+- Add accessibility options
+- Add a journal documentation to part A documentation
+- Potential study material organiser

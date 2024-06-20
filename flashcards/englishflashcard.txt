@@ -1,0 +1,5 @@
+Who wrote 'Pride and Prejudice'?,Jane Austen,Emily Bronte,Charles Dickens,Mark Twain
+What is the past tense of 'run'?,ran,runned,run,running
+Who is the author of '1984'?,George Orwell,Aldous Huxley,J.K. Rowling,F. Scott Fitzgerald
+What is the synonym of 'happy'?,joyful,sad,angry,afraid
+What is the antonym of 'ancient'?,modern,old,antique,vintage

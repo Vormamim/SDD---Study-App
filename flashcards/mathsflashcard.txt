@@ -1,0 +1,5 @@
+What is the square root of 49?,7,6,8,5
+What is the value of Pi (to 2 decimal places)?,3.14,3.12,3.16,3.18
+What is the result of 9 + 10?,19,20,18,21
+What is 7 x 8?,56,48,54,64
+What is the derivative of x^2?,2x,x^2,2,x

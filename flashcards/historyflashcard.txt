@@ -1,0 +1,5 @@
+Who was the first emperor of Rome?,Augustus,Julian,Nero,Caligula
+What year did the Titanic sink?,1912,1905,1915,1920
+Who was the British Prime Minister during World War II?,Winston Churchill,Neville Chamberlain,Clement Attlee,Harold Macmillan
+What event started World War I?,Assassination of Archduke Franz Ferdinand,Bombing of Pearl Harbor,Invasion of Poland,Fall of the Berlin Wall
+Which ancient civilization built the pyramids?,Egyptian,Greek,Aztec,Roman
