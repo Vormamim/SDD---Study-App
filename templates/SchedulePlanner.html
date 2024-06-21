@@ -21,7 +21,7 @@
     <div id='calendar'></div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() { // sets up an event listener for the main content being loaded to set up the main calendar and tasks.
             calendarEl = document.getElementById('calendar');
             calendar = new FullCalendar.Calendar(calendarEl, {
                 events: [],
@@ -31,7 +31,7 @@
                 eventMouseEnter: function(info) {
             showTaskDetails(info.event);
         },
-        eventMouseLeave: function() {
+        eventMouseLeave: function() { // runs the hideTaskDetails function when the mouse leaves the respective task
             hideTaskDetails();
         }
             });
@@ -41,7 +41,7 @@
             document.getElementById('createTaskBtn').addEventListener('click', createTask);
         });
 
-        function showTaskDetails(event) {
+        function showTaskDetails(event) { // shows the text details when the task is hovered above
     const detailsDiv = document.createElement('div');
     detailsDiv.id = 'taskDetailsHover';
     detailsDiv.style.position = 'absolute';
@@ -145,7 +145,7 @@ function createTask() { // function to create a new task
 }
 
 
-function updateCalendar() { // function to update the calendar with new data
+function updateCalendar() { // function to update the calendar with new data by removing all of the old events and re-inserting them with locally stored events.
     const events = JSON.parse(localStorage.getItem('scheduleEvents')) || [];
     calendar.removeAllEvents();
     events.forEach(event => {
@@ -153,7 +153,7 @@ function updateCalendar() { // function to update the calendar with new data
             title: event.title,
             start: event.start,
             end: event.end,
-            extendedProps: { details: event.extendedProps ? event.extendedProps.details : '' } // Ensure extendedProps
+            extendedProps: { details: event.extendedProps ? event.extendedProps.details : '' } // extendedProps is the data inside of each of the tasks
         });
     });
     calendar.render();

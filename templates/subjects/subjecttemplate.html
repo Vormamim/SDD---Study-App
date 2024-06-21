@@ -79,7 +79,7 @@ function splitAndGroupGradesArrays(arrays) { // function to split the grades arr
         });
         return [group1, group2, group3];
     }
-    function subjectping(){ // function to get the subject name from the url
+    function subjectping(){ // function to get the subject name from the url by pulling the information from the search bar and splitting it by the commas and question marks.
         url = window.location.href
         var queryString = url ? url.split('?')[1] : window.location.search.slice(1);
         var queryString = queryString.split('=')[1];
@@ -129,7 +129,7 @@ const openFile = (e) => { // function to open the grades file insterted into the
             updateSubjectTasks(group5, group1, group3, subjectid);
         });
     };
-function updateSubjectTasks(subjects, tasks, dueDates, targetSubject) { // function to update the tasks list with new tasks
+function updateSubjectTasks(subjects, tasks, dueDates, targetSubject) { // function to update the tasks list with new tasks by running a for loop for each subject inserted in the previous task.
     const table = document.getElementById('taskTable');
                 while (table.rows.length > 1) {
                 table.deleteRow(1);
@@ -147,7 +147,7 @@ function updateSubjectTasks(subjects, tasks, dueDates, targetSubject) { // funct
         }
     }
 }
-function updateSubjectGrades(subjects, tasks, grades, targetSubject) { // function to update the grades list with new grades
+function updateSubjectGrades(subjects, tasks, grades, targetSubject) { // function to update the grades list with new grades through a very similar method to the population of the array with tasks.
     const table = document.getElementById('gradestable');
     const overallGradeDiv = document.querySelector('#gradesSidebar h2');
 

@@ -36,7 +36,7 @@
             console.log("Subjects Found:", group1);
             group1 = uniq(group1);
             console.log("Unique Subjects Found:", group1);
-            group1.forEach(subject => {
+            group1.forEach(subject => { // creates a seperate div element for each created subject, and adds an onclick function to redirect the user to the correct location.
                 var newElement = document.createElement('div');
                 newElement.id = subject; newElement.className = "subject";
                 newElement.innerHTML = subject;

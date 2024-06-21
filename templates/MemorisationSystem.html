@@ -44,7 +44,7 @@
         document.getElementById('questionsFile').click();
     });
 
-    function loadQuestions(event) { // function to load the questions
+    function loadQuestions(event) { // loads the questions by getting the target file selected and sent through the event variable and then splits the file into segments and inserts them into segments.
         const file = event.target.files[0];
         if (file) {
             file.text().then((text) => {
@@ -60,7 +60,7 @@
         }
     }
 
-    function showQuestion(index) { // function to show the question
+    function showQuestion(index) { // shows the listed question by getting the inputted question and answers, fills the answer divs with the appropriate text, and randomises their positions to create a randomised answer.
         const [question, a1, a2, a3, a4] = questions[index];
         document.getElementById('questionText').textContent = question;
         
@@ -98,7 +98,7 @@
         document.querySelector('dialog').close();
     }
 
-    function shuffleArray(array) { // function to shuffle the array
+    function shuffleArray(array) { // shuffles the array through randomly setting a constant j to the current array length plus one mutliplied by a randomly generated number.
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];

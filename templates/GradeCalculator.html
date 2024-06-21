@@ -33,7 +33,7 @@
 
     function init() { // initialises the chart when the body loads
         var ctx = document.getElementById('myChart').getContext('2d');
-        myChart = new Chart(ctx, {
+        myChart = new Chart(ctx, { // forms a new chart to be populated with the following details on the structuring of the chart
             type: "bar",
             data: {
                 labels: xValues,
@@ -43,7 +43,7 @@
                 }]
             },
             options: {
-                scales: {
+                scales: { // general settings for the chart, such as its' title and its' starting position.
                     yAxes: [{ ticks: { beginAtZero: true } }]
                 },
                 legend: { display: false },
@@ -59,7 +59,7 @@
         e.target.files[0].text().then((t) => {
             const outcome = t.split(/\r?\n/);
             console.log("File content:", outcome);
-            const dataLines = outcome.slice(1);
+            const dataLines = outcome.slice(1); // splits the outcomes into separate datalines
             const [group1, group2, group3] = splitAndGroupArrays(dataLines);
             console.log("Group 1:", group1); //subjects
             console.log("Group 2:", group2); //tasks   
@@ -104,7 +104,7 @@
     const sidebar = document.getElementById('gradesSidebar');
     const subjectGradesMap = {};
 
-    for (let i = 0; i < subjects.length; i++) {
+    for (let i = 0; i < subjects.length; i++) { // forms a map of each found subject in the grades file, igonring any duplicate subjects
         const subject = subjects[i];
         const grade = Number(grades[i]);
         if (!subjectGradesMap[subject]) {
@@ -112,7 +112,7 @@
         }
         subjectGradesMap[subject].push(grade);
     }
-    for (const subject in subjectGradesMap) {
+    for (const subject in subjectGradesMap) { // calculates the grade total for the inputted subject grades
         const subjectGrades = subjectGradesMap[subject];
         const totalGrades = subjectGrades.reduce((sum, grade) => sum + grade, 0);
         const averageGrade = totalGrades / subjectGrades.length;
